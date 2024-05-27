@@ -4,7 +4,11 @@ import { OrderService } from '../order/order.service';
 import { ProductService } from '../product/product.service';
 import { Customer } from '../Module/Customer';
 import { Product } from '../Module/Product';
-import { Order } from '../Module/Order';
+import { Order, OrderItem, } from '../Module/Order';
+import Chart from 'chart.js/auto';
+
+
+
 
 @Component({
   selector: 'app-dash-home',
@@ -12,6 +16,8 @@ import { Order } from '../Module/Order';
   styleUrls: ['./dash-home.component.css']
 })
 export class DashHomeComponent implements OnInit{
+ 
+
   constructor(
     private customerService: CustomerService, 
     private orderService:OrderService,
@@ -25,14 +31,19 @@ export class DashHomeComponent implements OnInit{
   customers:Customer[]=[];
   products:Product[]=[];
   orders:Order[]=[];
-
+  recentOrders: Order[] = [];
+  popularProducts: any[] = [];
 
   ngOnInit(): void {
     this.getAllUsers();
     this.getAllProducts();
     this.getAllOrders();
+    this.getRecentOrders();
+    this.getPopularProducts();
+    this.initSalesChart();
+    this.initOrdersChart();
 
-   }
+  }
    getAllUsers(): void {
     this.customerService.getAllUsers().subscribe((res) => {
       this.customers = res;
@@ -90,6 +101,154 @@ export class DashHomeComponent implements OnInit{
       }
       this.totalOrders = count;
     }, 100);
+  }
+
+  getRecentOrders() {
+    this.orderService.getAllOrders().subscribe((orders) => {
+      // Assuming you want the most recent 5 orders
+      this.recentOrders = orders.slice(-5).reverse();
+    });
+  }
+
+  getPopularProducts(): void {
+    this.orderService.getAllOrders().subscribe((orders: Order[]) => {
+      const productCountMap = new Map<number, number>();
+
+      orders.forEach((order: Order) => {
+        order.orderResponse.orderItems.forEach((item: OrderItem) => {
+          if (productCountMap.has(item.productId)) {
+            productCountMap.set(item.productId, productCountMap.get(item.productId)! + item.quantity);
+          } else {
+            productCountMap.set(item.productId, item.quantity);
+          }
+        });
+      });
+
+      const sortedProducts = Array.from(productCountMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+      sortedProducts.forEach(([productId, count]) => {
+        this.productService.getProductById(productId).subscribe(product => {
+          this.popularProducts.push({ ...product, count });
+        });
+      });
+    });
+  }
+
+  initSalesChart(): void {
+    const ctx = document.getElementById('salesChart') as HTMLCanvasElement;
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+          label: 'Sales Value',
+          data: [30, 50, 40, 60, 70, 80],
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: 'white'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: 'white'
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            ticks: {
+              color: 'white'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  initOrdersChart(): void {
+    const ctx = document.getElementById('ordersChart') as HTMLCanvasElement;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+          label: 'Total Orders',
+          data: [10, 20, 30, 40, 50, 60],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#333'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#333'
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            ticks: {
+              color: '#333'
+            },
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
+            }
+          }
+        }
+      }
+    });
   }
 
 }

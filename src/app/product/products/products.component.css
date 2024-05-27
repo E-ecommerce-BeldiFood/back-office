@@ -57,6 +57,16 @@ h1 {
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
+.product-title {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+  font-size: 2.5rem; /* Moderately large font size */
+  font-weight: bold; /* Bold font weight */
+  /*color: #2c3e50; /* Dark gray color */
+  text-align: left; /* Align text to the left */
+  margin-bottom: 1rem; /* Add some space below the title */
+  margin-left: 1rem; /* Add some space to the left */
+}
 
 
 /* pagination */

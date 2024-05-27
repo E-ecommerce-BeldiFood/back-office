@@ -4,6 +4,7 @@ export interface OrderItem {
     name: string;
     price: number;
     imageUrl: string;
+    description:string;
     quantity: number;
   }
   export interface UserDTO {

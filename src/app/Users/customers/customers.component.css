@@ -1,3 +1,10 @@
+.peer-checked .custom-radio::before {
+  content: '';
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #3b82f6;
+  border-radius: 50%;
+}
 
 
 /* pagination */

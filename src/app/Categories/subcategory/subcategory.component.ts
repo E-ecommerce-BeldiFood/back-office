@@ -18,6 +18,7 @@ export class SubcategoryComponent implements OnInit {
   showForm: boolean = false;
   subcategories: Subcategory[] = [];
   categories: Category[] = [];
+  selectedSubCategories: number[] = [];
   // Add a property to hold the current category being updated
   currentSubCategory: Subcategory | null = null;
   //pagination
@@ -306,4 +307,91 @@ closeModaladd(str: string) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
   
+  onSearch(name: string): void {
+    if (name.trim() === '') {
+      this.getAllSubcategories();
+      this.resetPagination();
+     
+    } else {
+      this.subcategoryService.searchsubcategories(name).subscribe(
+        (response: Subcategory[]) => {
+          this.paginatedSubcategory = response;
+        },
+        (error) => {
+          console.error('Error fetching products:', error);
+        }
+      );
+    }
+  }
+  
+  onSearchInputChange(value: string): void {
+    if (value.trim() === '') {
+      this.getAllSubcategories();
+      this.resetPagination();
+    }
+  }
+  paginate(array: any[], page_size: number, page_number: number): any[] {
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+  }
+  
+  resetPagination(): void {
+    this.currentPage = 1;
+    this.selectedSubCategories = this.paginate(this.subcategories, this.currentPage, this.pageSize);
+  }
+  
+  // Method to toggle selection of all products
+  toggleSelectAll(event: any): boolean {
+    const checked = event.target.checked;
+    this.selectedSubCategories = checked ? this.paginatedSubcategory.map(subcategory => subcategory.id) : [];
+    return checked;
+  }
+  
+  
+  
+  // Method to handle mass delete action
+  massDeleteSelectedSubCategories(): void {
+    if (this.selectedSubCategories.length > 0) {
+      // Call the ProductService method to delete selected products
+      this.subcategoryService.massDeletesubcategories(this.selectedSubCategories).subscribe({
+        next: () => {
+          // Handle success
+          console.log('Selected products deleted successfully');
+          // Clear the selectedProducts array after deletion
+          this.selectedSubCategories = [];
+          // Refresh product list
+          this.getAllSubcategories();
+        },
+        error: (error) => {
+          // Handle error
+          console.error('Error deleting selected products:', error);
+        }
+      });
+    } else {
+      // No products selected, show message or handle accordingly
+      console.log('No products selected for deletion');
+    }
+  }
+  
+  
+  toggleSelectCategory(event: any, id: number): void {
+    const checked = event.target.checked;
+  
+    if (checked) {
+        // Add product ID to selectedProducts array
+        this.selectedSubCategories.push(id);
+    } else {
+        // Remove product ID from selectedProducts array
+        const index = this.selectedSubCategories.indexOf(id);
+        if (index !== -1) {
+            this.selectedSubCategories.splice(index, 1);
+        }
+    }
+  }
+  
+  
+  isSelected(id: number): boolean {
+    return this.selectedSubCategories.includes(id);
+  }
+  
+
 }

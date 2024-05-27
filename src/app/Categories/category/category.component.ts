@@ -19,6 +19,7 @@ export class CategoryComponent implements OnInit {
   showErrorDeleteAlert: boolean = false;
   showSuccessUpdateAlert: boolean = false;
   showErrorUpdateAlert: boolean = false;
+  selectedCategories: number[] = [];
   //pagination
  page = 0;
  pageSize = 5; 
@@ -32,7 +33,7 @@ export class CategoryComponent implements OnInit {
     this.isAddModalOpen = true;
   }
   
-  // In your TypeScript file
+  
   deleteCategoryId: number | null = null;
   category: any;
 
@@ -296,6 +297,91 @@ export class CategoryComponent implements OnInit {
   getPaginationArray(): number[] {
     const totalPages = this.totalPages;
     return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  onSearch(name: string): void {
+    if (name.trim() === '') {
+      this.getAllCategories();
+      this.resetPagination();
+     
+    } else {
+      this.categoryService.searchProducts(name).subscribe(
+        (response: Category[]) => {
+          this.paginatedCategory = response;
+        },
+        (error) => {
+          console.error('Error fetching products:', error);
+        }
+      );
+    }
+  }
+  
+  onSearchInputChange(value: string): void {
+    if (value.trim() === '') {
+      this.getAllCategories();
+      this.resetPagination();
+    }
+  }
+  paginate(array: any[], page_size: number, page_number: number): any[] {
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+  }
+  
+  resetPagination(): void {
+    this.currentPage = 1;
+    this.paginatedCategory = this.paginate(this.categories, this.currentPage, this.pageSize);
+  }
+  
+  // Method to toggle selection of all products
+  toggleSelectAll(event: any): boolean {
+    const checked = event.target.checked;
+    this.selectedCategories = checked ? this.paginatedCategory.map(category => category.id) : [];
+    return checked;
+  }
+  
+  
+  
+  // Method to handle mass delete action
+  massDeleteSelectedCategories(): void {
+    if (this.selectedCategories.length > 0) {
+      // Call the ProductService method to delete selected products
+      this.categoryService.massDeleteCategories(this.selectedCategories).subscribe({
+        next: () => {
+          // Handle success
+          console.log('Selected products deleted successfully');
+          // Clear the selectedProducts array after deletion
+          this.selectedCategories = [];
+          // Refresh product list
+          this.getAllCategories();
+        },
+        error: (error) => {
+          // Handle error
+          console.error('Error deleting selected products:', error);
+        }
+      });
+    } else {
+      // No products selected, show message or handle accordingly
+      console.log('No products selected for deletion');
+    }
+  }
+  
+  
+  toggleSelectCategory(event: any, id: number): void {
+    const checked = event.target.checked;
+  
+    if (checked) {
+        // Add product ID to selectedProducts array
+        this.selectedCategories.push(id);
+    } else {
+        // Remove product ID from selectedProducts array
+        const index = this.selectedCategories.indexOf(id);
+        if (index !== -1) {
+            this.selectedCategories.splice(index, 1);
+        }
+    }
+  }
+  
+  
+  isSelected(id: number): boolean {
+    return this.selectedCategories.includes(id);
   }
   
 

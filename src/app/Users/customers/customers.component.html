@@ -1,9 +1,31 @@
-<h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Customers</h1>
+<!-- <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Customers</h1> -->
 
 <div class="card">
  
-  <div class="table-responsive text-nowrap">
-    
+  <div class="table-responsive text-nowrap p-4">
+    <div class="flex justify-between items-center">
+      <div class="w-full md:w-1/2 mb-2 text-gray-500 text-base">
+        <span class="font-bold">All Users:</span> {{ totalUsers }}
+      </div>
+      <div class="flex items-center space-x-4">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="radio" name="userFilter" [(ngModel)]="showAllUsers" (change)="toggleUserFilter(true)" class="hidden peer">
+          <div class="w-4 h-4 rounded-full border-2 border-gray-400 peer-checked:border-blue-500 flex items-center justify-center">
+            <div *ngIf="showAllUsers" class="w-2 h-2 bg-blue-500 rounded-full"></div>
+          </div>
+          <span class="ml-2 text-gray-500 text-base font-bold">All</span>
+        </label>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="radio" name="userFilter" [(ngModel)]="showInactiveUsers" (change)="toggleUserFilter(false)" class="hidden peer">
+          <div class="w-4 h-4 rounded-full border-2 border-gray-400 peer-checked:border-blue-500 flex items-center justify-center">
+            <div *ngIf="showInactiveUsers" class="w-2 h-2 bg-blue-500 rounded-full"></div>
+          </div>
+          <span class="ml-2 text-gray-500 text-base font-bold">Inactive Users</span>
+        </label>
+      </div>
+    </div>
+ 
+  
     <table class="table">
       <thead class="table-light">
         <tr>

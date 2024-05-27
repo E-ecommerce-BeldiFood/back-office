@@ -21,6 +21,10 @@ export class CustomersComponent {
  currentPage: number = 1;
  itemsPerPage: number = 5;
  selectedCategoryid: number | undefined;
+ filteredCustomers: Customer[] = [];
+
+ showAllUsers: boolean = true;
+  showInactiveUsers: boolean = false;
 
   constructor(
     private customerService: CustomerService,
@@ -44,8 +48,16 @@ export class CustomersComponent {
       console.log(res);
       this.customers = res;
       this.updatePaginatedProducts();
+      this.filterUsers();
     });
   }
+  // New method to toggle between 'All' and 'Inactive Users'
+  toggleUserFilter(showAll: boolean) {
+    this.showAllUsers = showAll;
+    this.showInactiveUsers = !showAll;
+    this.filterUsers();
+  }
+ 
   isConfirmDelete: boolean = false;
 
    confirmDelete(id: number): void {
@@ -90,11 +102,10 @@ export class CustomersComponent {
   onPageChange(): void {
     this.updatePaginatedProducts();
   }
-  
   updatePaginatedProducts() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedCustomer = this.customers.slice(startIndex, endIndex);
+    this.paginatedCustomer = this.filteredCustomers.slice(startIndex, endIndex);
   }
   goToPage(page: number, event?: MouseEvent): void {
     if (event) {
@@ -108,6 +119,9 @@ export class CustomersComponent {
   get totalPages(): number {
     return Math.ceil(this.customers.length / this.itemsPerPage);
   }
+   get totalUsers(): number {
+    return this.customers.length;
+  } 
   
   getPaginationArray(): number[] {
     const totalPages = this.totalPages;
@@ -147,6 +161,14 @@ export class CustomersComponent {
       this.enableUser(customer.id);
     }
   }
-  
+  filterUsers() {
+    if (this.showInactiveUsers) {
+      this.filteredCustomers = this.customers.filter(customer => customer.status !== 'ENABLED');
+    } else {
+      this.filteredCustomers = this.customers;
+    }
+    this.updatePaginatedProducts();
+  }
+
 
 }

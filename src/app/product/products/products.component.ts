@@ -22,8 +22,8 @@ export class ProductsComponent implements OnInit {
   updateProductForm!: FormGroup;
   id: number=this.activatedRoute.snapshot.params["id"];
   subcategories: Subcategory[] = [];
-  selectedProduct: any = null; // Variable to store selected product details
-  // Add a property to hold the current category being updated
+  selectedProduct: any = null; 
+  selectedProducts: number[] = [];
   currentProduct: Product | null = null;
   products: Product[] = [];
   selectedSubCategoryId: number | undefined; // Ajoutez cette variable pour stocker l'ID de la catégorie sélectionnée
@@ -38,6 +38,7 @@ export class ProductsComponent implements OnInit {
   paginatedProducts: Product[] = [];
   currentPage: number = 1;
   itemsPerPage: number = 5;
+  
 
   file: File | null = null;
  
@@ -92,7 +93,7 @@ export class ProductsComponent implements OnInit {
       name: [null, [Validators.required]],
       price: [null, [Validators.required]],
       description: [null, [Validators.required]],
-      imageUrl: ["", Validators.required],
+      imageUrl: [null, Validators.required],
       timeToPrepareInMinute: [null, [Validators.required]],
       status: [null, [Validators.required]],
       subcategoryId: [null, [Validators.required]],
@@ -103,7 +104,7 @@ export class ProductsComponent implements OnInit {
       name: [null, [Validators.required]],
       price: [null, [Validators.required]],
       description: [null, [Validators.required]],
-      imageUrl: ['', Validators.required],
+      imageUrl: [null, Validators.required],
       timeToPrepareInMinute: [null, [Validators.required]],
       status: [null, [Validators.required]],
       subcategoryId: [null, [Validators.required]],
@@ -153,9 +154,13 @@ export class ProductsComponent implements OnInit {
     });
   }
   closeModalCate() {
-    this.isModalOpen = false;
+    this.isAddModalOpen = false;
+    this.imageUrl = "";
+    this.postProductForm.reset();
   }
-
+  openAddProductModal() {
+    this.isAddModalOpen = true;
+  }
   postProduct() {
     if (this.postProductForm.valid) {
       
@@ -180,6 +185,7 @@ export class ProductsComponent implements OnInit {
     } else {
       console.log('Form is invalid', this.postProductForm);
     }
+    
   }
 
   onSubCategoryChange(event: any) {
@@ -207,31 +213,30 @@ export class ProductsComponent implements OnInit {
     switch (str) {
 
       case 'add':
+        
         this.isAddModalOpen = !this.isAddModalOpen;
+        
         break;
 
-      case 'edit':
-        console.log(str, id);
-        this.isEditModalOpen = !this.isEditModalOpen;
-        this.selectedCategoryid = id;
-        this.currentProduct = this.products.find(sub => sub.id === id) || null;
-        if (this.currentProduct) {
-          this.updateProductForm.patchValue({
-            id: this.currentProduct.id,
-            name: this.currentProduct.name,
-            price: this.currentProduct.price,
-            status: this.currentProduct.status,
-            description: this.currentProduct.description,
-            imageUrl: this.imageUrl || this.currentProduct.imageUrl, // Ensure imageUrl is correctly set
-           //imageUrl: this.currentProduct.imageUrl,
-            timeToPrepareInMinute: this.currentProduct.timeToPrepareInMinute,
-            
-            //subcategoryId: this.currentProduct.subcategoryId,
-            
-          });
-        }
-        console.log(this.updateProductForm.value);
-        break;
+        case 'edit':
+          this.isEditModalOpen = !this.isEditModalOpen;
+          this.selectedCategoryid = id;
+          this.currentProduct = this.products.find(sub => sub.id === id) || null;
+          if (this.currentProduct) {
+            this.updateProductForm.patchValue({
+              id: this.currentProduct.id,
+              name: this.currentProduct.name,
+              price: this.currentProduct.price,
+              status: this.currentProduct.status,
+              description: this.currentProduct.description,
+              imageUrl: this.currentProduct.imageUrl, // Ensure imageUrl is correctly set
+              timeToPrepareInMinute: this.currentProduct.timeToPrepareInMinute,
+              subcategoryId: this.currentProduct.subcategoryId
+            });
+            this.imageUrl = this.currentProduct.imageUrl; // Set imageUrl for preview
+          }
+          break;
+        
       case 'delete':
         this.isDeleteModalOpen = !this.isDeleteModalOpen;
         console.log("toggle confirm delete called");
@@ -250,6 +255,28 @@ export class ProductsComponent implements OnInit {
 
   }
 
+  triggerFileInput() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    fileInput.click();
+  }
+
+  async previewEditImage(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    this.file = element.files ? element.files[0] : null;
+    if (this.file) {
+      const filePath = `yt/${Date.now()}-${this.file.name}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(filePath, this.file);
+
+      try {
+        const snapshot = await task;
+        this.imageUrl = await fileRef.getDownloadURL().toPromise();
+        this.updateProductForm.patchValue({ imageUrl: this.imageUrl });
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  }
   // Delete Stuff
   deleteAlert: boolean = false;
   isConfirmDelete: boolean = false;
@@ -376,6 +403,92 @@ get totalPages(): number {
 getPaginationArray(): number[] {
   const totalPages = this.totalPages;
   return Array.from({ length: totalPages }, (_, i) => i + 1);
+}
+
+onSearch(name: string): void {
+  if (name.trim() === '') {
+    this.getAllProducts();
+    this.resetPagination();
+   
+  } else {
+    this.productService.searchProducts(name).subscribe(
+      (response: Product[]) => {
+        this.paginatedProducts = response;
+      },
+      (error) => {
+        console.error('Error fetching products:', error);
+      }
+    );
+  }
+}
+
+onSearchInputChange(value: string): void {
+  if (value.trim() === '') {
+    this.getAllProducts();
+    this.resetPagination();
+  }
+}
+paginate(array: any[], page_size: number, page_number: number): any[] {
+  return array.slice((page_number - 1) * page_size, page_number * page_size);
+}
+
+resetPagination(): void {
+  this.currentPage = 1;
+  this.paginatedProducts = this.paginate(this.products, this.currentPage, this.pageSize);
+}
+
+// Method to toggle selection of all products
+toggleSelectAll(event: any): boolean {
+  const checked = event.target.checked;
+  this.selectedProducts = checked ? this.paginatedProducts.map(product => product.id) : [];
+  return checked;
+}
+
+
+
+// Method to handle mass delete action
+massDeleteSelectedProducts(): void {
+  if (this.selectedProducts.length > 0) {
+    // Call the ProductService method to delete selected products
+    this.productService.massDeleteProducts(this.selectedProducts).subscribe({
+      next: () => {
+        // Handle success
+        console.log('Selected products deleted successfully');
+        // Clear the selectedProducts array after deletion
+        this.selectedProducts = [];
+        // Refresh product list
+        this.getAllProducts();
+      },
+      error: (error) => {
+        // Handle error
+        console.error('Error deleting selected products:', error);
+      }
+    });
+  } else {
+    // No products selected, show message or handle accordingly
+    console.log('No products selected for deletion');
+  }
+}
+
+
+toggleSelectProduct(event: any, id: number): void {
+  const checked = event.target.checked;
+
+  if (checked) {
+      // Add product ID to selectedProducts array
+      this.selectedProducts.push(id);
+  } else {
+      // Remove product ID from selectedProducts array
+      const index = this.selectedProducts.indexOf(id);
+      if (index !== -1) {
+          this.selectedProducts.splice(index, 1);
+      }
+  }
+}
+
+
+isSelected(id: number): boolean {
+  return this.selectedProducts.includes(id);
 }
 
 

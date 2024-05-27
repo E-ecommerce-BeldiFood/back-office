@@ -64,7 +64,10 @@ registerLocaleData(en);
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule,
-    NzPopconfirmModule
+    NzPopconfirmModule,
+    
+    
+ 
   ],
   providers: [{
     provide:HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi:true,

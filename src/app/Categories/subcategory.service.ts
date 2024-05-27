@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Subcategory } from '../Module/Subcategory';
 
 const BASIC_URL = "http://localhost:8002";
 
@@ -25,4 +26,14 @@ export class SubcategoryService {
     console.log("mokk")
     return this.http.delete(BASIC_URL + "/subcategories/" + id);
   }
+
+
+  searchsubcategories(name: string): Observable<Subcategory[]> {
+    return this.http.get<Subcategory[]>(`${BASIC_URL}/subcategories/search?name=${name}`);
+  }
+
+  massDeletesubcategories(ids: number[]): Observable<void> {
+    return this.http.delete<void>(`${BASIC_URL}/subcategories/mass-delete`, { body: ids });
+  }
+
 }

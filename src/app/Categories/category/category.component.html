@@ -1,4 +1,4 @@
-<h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Categories</h1>
+<!-- <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">Categories</h1> -->
 
 <div class="card">
   <div *ngIf="showErrorDeleteAlert" id="alert-border-2" class="fixed z-10 bottom-4 right-4 flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
@@ -37,15 +37,38 @@
       </div>
       </div>
 
-  <div class="table-responsive text-nowrap">
-    <button (click)="openAddCategoryModal()" 
-      class="px-4 py-2 mb-2 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
+      <div class="table-responsive text-nowrap  p-4">
+        <div class="flex items-center justify-between">
+        <!-- Search box -->
+        <div class="w-full md:w-1/2 mb-2 mr-2">
+            <form class="relative flex items-center" (ngSubmit)="onSearchInputChange(searchInput.value)">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <!-- Optional search icon -->
+                </div>
+                <input #searchInput type="text" id="product-search" (input)="onSearch(searchInput.value)"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Search" style="padding-left: 2.5rem;">
+            </form>
+        </div>
+    
+        <!-- Button group -->
+        <div class="flex">
+            <button (click)="massDeleteSelectedCategories()"
+                class="px-4 py-2 mb-1 mr-2 bg-red-800 hover:bg-red-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Delete Selected
+            </button>
+     <button (click)="openAddCategoryModal()" 
+      class="px-4 py-2 mb-1 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
       Add Category
-    </button>
+     </button>
+    </div>
+  </div>
 
     <table class="table">
       <thead class="table-light">
         <tr>
+          <th><input type="checkbox" (change)="toggleSelectAll($event)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          </th>
           <th>Category ID</th>
           <th>Name</th>
 
@@ -54,6 +77,7 @@
       </thead>
       <tbody class="table-border-bottom-0">
         <tr *ngFor="let category of paginatedCategory">
+          <td><input type="checkbox" [checked]="isSelected(category.id)" (change)="toggleSelectCategory($event, category.id)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></td>
           <td>{{category.id }}</td>
           <td>
             <strong>{{ category.name }}</strong>

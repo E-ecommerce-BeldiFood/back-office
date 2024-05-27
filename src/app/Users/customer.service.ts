@@ -16,6 +16,9 @@ export class CustomerService {
     return this.http.get(BASIC_URL + "/users/admin");
   }
 
+  getDisabledUsers(): Observable<any> {
+    return this.http.get(BASIC_URL + "/users/disabled-users/admin");
+  }
   
   deleteUsers(id: number): Observable<any> {
     return this.http.delete(BASIC_URL + "/users/admin/" +id);
