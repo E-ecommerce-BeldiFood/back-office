@@ -143,69 +143,12 @@ export class DashHomeComponent implements OnInit{
         datasets: [{
           label: 'Sales Value',
           data: [30, 50, 40, 60, 70, 80],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+          borderColor: '#6c757d',
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          pointBackgroundColor: '#6c757d',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: {
-              color: 'white'
-            }
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false,
-          }
-        },
-        interaction: {
-          mode: 'nearest',
-          axis: 'x',
-          intersect: false
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: 'white'
-            },
-            grid: {
-              display: false
-            }
-          },
-          y: {
-            ticks: {
-              color: 'white'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            }
-          }
-        }
-      }
-    });
-  }
-
-  initOrdersChart(): void {
-    const ctx = document.getElementById('ordersChart') as HTMLCanvasElement;
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-        datasets: [{
-          label: 'Total Orders',
-          data: [10, 20, 30, 40, 50, 60],
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1,
+          pointHoverBorderColor: '#6c757d'
         }]
       },
       options: {
@@ -246,7 +189,87 @@ export class DashHomeComponent implements OnInit{
               color: 'rgba(0, 0, 0, 0.1)'
             }
           }
-        }
+        },
+        layout: {
+          padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+          }
+        },
+        backgroundColor: '#fff' // Set the background color of the chart
+      }
+    });
+  }
+  
+  initOrdersChart(): void {
+    const ctx = document.getElementById('ordersChart') as HTMLCanvasElement;
+    const gradient = ctx.getContext('2d')!.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#007bff');
+    gradient.addColorStop(1, '#00c9ff');
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+          label: 'Total Orders',
+          data: [10, 20, 30, 40, 50, 60],
+          backgroundColor: gradient,
+          borderColor: '#007bff',
+          borderWidth: 1,
+          hoverBackgroundColor: '#00c9ff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#333'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#333'
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            ticks: {
+              color: '#333'
+            },
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
+            }
+          }
+        },
+        layout: {
+          padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+          }
+        },
+        backgroundColor: '#fff' // Set the background color of the chart
       }
     });
   }
