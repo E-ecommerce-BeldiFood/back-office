@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../category.service';
 import { Router } from '@angular/router';
 import { Category } from 'src/app/Module/Category';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 
 
@@ -20,6 +21,9 @@ export class CategoryComponent implements OnInit {
   showSuccessUpdateAlert: boolean = false;
   showErrorUpdateAlert: boolean = false;
   selectedCategories: number[] = [];
+  imageUrl: string="" ;
+  file: File | null = null;
+
   //pagination
  page = 0;
  pageSize = 5; 
@@ -44,7 +48,8 @@ export class CategoryComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private storage: AngularFireStorage
   ) { }
 
   ngOnInit() {
@@ -59,6 +64,40 @@ export class CategoryComponent implements OnInit {
     this.getAllCategories();
   }
 
+  async previewImage(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    this.file = element.files ? element.files[0]: null;
+    if (this.file) {
+      // Generate a unique file name using timestamp and file extension
+      const filePath = `yt/${Date.now()}-${this.file}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(filePath, this.file);
+  
+      try {
+        // Wait for the upload task to complete
+        const snapshot = await task;
+  
+        // Get the download URL once the upload is complete
+        this.imageUrl = await fileRef.getDownloadURL().toPromise();
+  
+        // Log the URL to verify
+ 
+
+        console.log("sgsgsgsgsg",this.imageUrl);
+       
+         
+         this.postCategoryForm.value.imageUrl=this.imageUrl as string ;
+        // Log form value and validity for verification
+        console.log('Form Value:', this.postCategoryForm.value);
+        console.log('this.postProductForm.value.imageUrl', this.postCategoryForm.value.imageUrl);
+
+        console.log('imageUrl Control Valid:', this.postCategoryForm.get('imageUrl'));
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        // Handle error if upload or retrieval fails
+      }
+    }
+  }
   getAllCategories() {
     this.categoryService.getAllCategories().subscribe((res) => {
       console.log(res);
@@ -74,6 +113,7 @@ export class CategoryComponent implements OnInit {
     this.updateCategoryForm.patchValue({
       id: category.id,
       name: category.name,
+      imageUrl: [null, Validators.required]
     });
 
   }
@@ -106,7 +146,9 @@ export class CategoryComponent implements OnInit {
           this.updateCategoryForm.patchValue({
             id: this.currentCategory.id,
             name: this.currentCategory.name,
+            imageUrl: this.currentCategory.imageUrl,
           });
+          this.imageUrl = this.currentCategory.imageUrl; // Set imageUrl for preview
         }
         console.log(this.updateCategoryForm.value);
         break;
@@ -170,6 +212,27 @@ export class CategoryComponent implements OnInit {
     this.deleteCategoryId = null;
   }
 
+  triggerFileInput() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    fileInput.click();
+  }
+  async previewEditImage(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    this.file = element.files ? element.files[0] : null;
+    if (this.file) {
+      const filePath = `yt/${Date.now()}-${this.file.name}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(filePath, this.file);
+
+      try {
+        const snapshot = await task;
+        this.imageUrl = await fileRef.getDownloadURL().toPromise();
+        this.updateCategoryForm.patchValue({ imageUrl: this.imageUrl });
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  }
 
   postCategories() {
     console.log(this.postCategoryForm.value);
@@ -183,7 +246,8 @@ export class CategoryComponent implements OnInit {
     )
     this.postCategoryForm = this.fb.group({
       id: [null],
-      name: [null]
+      name: [null],
+      imageUrl: [null, Validators.required]
     });
   }
 
@@ -207,10 +271,8 @@ export class CategoryComponent implements OnInit {
 
   closeModalCate() {
   this.isAddModalOpen = false; // Set isAddModalOpen to false to close the modal
-  this.postCategoryForm = this.fb.group({
-    id: [null],
-    name: [null]
-  });
+  this.imageUrl = "";
+  this.postCategoryForm.reset();
 }
 
 
@@ -336,7 +398,6 @@ export class CategoryComponent implements OnInit {
     this.selectedCategories = checked ? this.paginatedCategory.map(category => category.id) : [];
     return checked;
   }
-  
   
   
   // Method to handle mass delete action

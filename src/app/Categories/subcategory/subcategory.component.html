@@ -52,10 +52,7 @@
     
         <!-- Button group -->
         <div class="flex">
-            <button (click)="massDeleteSelectedSubCategories()"
-                class="px-4 py-2 mb-1 mr-2 bg-red-800 hover:bg-red-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                Delete Selected
-            </button>
+            
        <button (click)="openAddCategoryModal()"
       class="px-4 py-2 mb-1 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
       Add SubCategory
@@ -65,8 +62,8 @@
     <table class="table">
       <thead class="table-light">
         <tr>
-          <th><input type="checkbox" (change)="toggleSelectAll($event)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-          </th>
+          
+          
           <th>ID</th>
           <th>Subcategory Name</th>
           <th>Category Name</th>
@@ -76,7 +73,7 @@
       </thead>
       <tbody class="table-border-bottom-0">
         <tr *ngFor="let subcategory of paginatedSubcategory">
-          <td><input type="checkbox" [checked]="isSelected(subcategory.id)" (change)="toggleSelectCategory($event, subcategory.id)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></td>
+          
           <td>{{subcategory.id }}</td>
           <td>
             <strong>{{ subcategory.name }}</strong>

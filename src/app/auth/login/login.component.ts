@@ -40,7 +40,7 @@ export class LoginComponent {
         localStorage.setItem('refreshToken', JSON.stringify(response.refreshToken));
         
         // Navigate to the home page or redirect to the desired route
-        this.router.navigate(['/dash-home']); // Navigate to home or dashboard
+        this.router.navigate(['/dash-home']); // Navigate sidbar
       },
       error => {
         this.errorMessage = 'Login failed. Please check your credentials and try again.';

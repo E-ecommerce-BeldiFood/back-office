@@ -53,10 +53,7 @@
     
         <!-- Button group -->
         <div class="flex">
-            <button (click)="massDeleteSelectedCategories()"
-                class="px-4 py-2 mb-1 mr-2 bg-red-800 hover:bg-red-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                Delete Selected
-            </button>
+            
      <button (click)="openAddCategoryModal()" 
       class="px-4 py-2 mb-1 bg-blue-800 hover:bg-blue-600 text-white rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 float-right">
       Add Category
@@ -67,21 +64,21 @@
     <table class="table">
       <thead class="table-light">
         <tr>
-          <th><input type="checkbox" (change)="toggleSelectAll($event)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-          </th>
+          
           <th>Category ID</th>
           <th>Name</th>
+          <th>Image</th>
 
           <th class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
         <tr *ngFor="let category of paginatedCategory">
-          <td><input type="checkbox" [checked]="isSelected(category.id)" (change)="toggleSelectCategory($event, category.id)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></td>
           <td>{{category.id }}</td>
           <td>
             <strong>{{ category.name }}</strong>
           </td>
+          <td><img [src]="(category?.imageUrl)" width="50" height="50"></td>
 
           <td>
             <div class="dropdown flex flex-row justify-center">
@@ -183,6 +180,35 @@
                 aria-label="name" formControlName="name" />
             </div>
 
+            <div class="mb-4">
+              <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category Images</span>
+              <div *ngIf="!imageUrl" class="flex justify-center items-center w-full">
+                <label for="imageUrl"
+                  class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                  <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                    <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <span class="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
+                  </div>
+                  <input formControlName="imageUrl" id="imageUrl" type="file" class="hidden"
+                    (change)="previewImage($event)">
+                </label>
+              </div>
+              <div class="mt-4">
+                <img [src]="imageUrl" *ngIf="imageUrl" alt="Uploaded Image" class="max-w-full h-auto">
+              </div>
+              <div *ngIf="postCategoryForm.get('imageUrl')?.invalid && postCategoryForm.get('imageUrl')?.touched"
+                class="text-danger">
+                imageUrl is required.
+              </div>
+            </div>
+
             <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">
               Add
             </button>
@@ -211,6 +237,35 @@
                 aria-label="name" formControlName="name" />
             </div>
 
+            <div class="mb-4">
+              <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category Images</span>
+              <div class="flex justify-center items-center w-full">
+                <div class="relative">
+                  <img [src]="imageUrl" *ngIf="imageUrl" alt="Uploaded Image" class="max-w-full h-auto cursor-pointer"
+                    (click)="triggerFileInput()">
+                  <label for="editImageUrl"
+                    class="absolute inset-0 flex flex-col justify-center items-center w-full h-full bg-gray-50 bg-opacity-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    *ngIf="!imageUrl">
+                    <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                      <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span class="font-semibold">Click to upload</span> or drag and drop
+                      </p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
+                    </div>
+                    <input formControlName="imageUrl" id="editImageUrl" type="file" class="hidden"
+                      (change)="previewEditImage($event)">
+                  </label>
+                </div>
+              </div>
+              <div class="mt-4" *ngIf="imageUrl">
+                <input type="file" id="fileInput" (change)="previewEditImage($event)" hidden>
+              </div>
+            </div>
             <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">
               Save
             </button>
