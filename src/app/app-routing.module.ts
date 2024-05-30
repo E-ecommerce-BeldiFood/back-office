@@ -13,22 +13,27 @@ import { DetailOrderComponent } from './order/DeatilOrder/detail-order/detail-or
 
 
 const routes: Routes = [
-  {path:'', redirectTo:'/login',pathMatch:'full'},
-    {path:'login', component:LoginComponent},
-    //{ path: 'dashhome', component: DashboardComponent },
-   { path: 'dash-home', component:  DashHomeComponent},
-    { path: 'products', component: ProductsComponent },
-    { path: 'Customers', component: CustomersComponent },
-    { path: 'category', component: CategoryComponent },
-    { path: 'subcategory', component: SubcategoryComponent },
-    { path: 'Orders', component: OrdersComponent },
-    { path: 'Order_detail/:orderId', component: DetailOrderComponent }
-  
-  
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'dashboard', component: DashboardComponent, children: [
+      { path: '', redirectTo: 'dash-home', pathMatch: 'full' },
+      { path: 'dash-home', component: DashHomeComponent },
+      { path: 'products', component: ProductsComponent },
+      { path: 'customers', component: CustomersComponent },
+      { path: 'category', component: CategoryComponent },
+      { path: 'subcategory', component: SubcategoryComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'order_detail/:orderId', component: DetailOrderComponent }
+    ]
+  }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [Location]
+  
 })
 export class AppRoutingModule { }

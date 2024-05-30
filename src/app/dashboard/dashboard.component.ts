@@ -10,10 +10,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
+  // isLoggedIn = false;
   isCollapsed = false;
   isVisible = false;
   constructor(private servicetoken : AuthService, private router: Router){
-
+    
   }
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed;
@@ -29,16 +30,20 @@ export class DashboardComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-    isLoggedIn() {
+   /*  checkIsLoggedIn() {
+      console.log("fdjkn");
     return window.localStorage.getItem('accessToken') !== null;
-  }  
+  }  */ 
   logout() {
     // Clear user information from local storage
     localStorage.removeItem('UserInfo');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    // this.isLoggedIn = false;
     this.router.navigate(['login'])
   }
-
+  isLoggedIn() {
+  return window.localStorage.getItem('accessToken') !== null;
+  }
   
 }

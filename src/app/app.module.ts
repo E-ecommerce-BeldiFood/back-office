@@ -29,7 +29,7 @@ import { DashHomeComponent } from './dash-home/dash-home.component'
 import { environment } from './environment/environment';
 import { LoginComponent } from './auth/login/login.component';
 import { DetailOrderComponent } from './order/DeatilOrder/detail-order/detail-order.component';
-import { AuthInterceptor } from './auth/auth-interceptor.interceptor.spec';
+import { AuthInterceptor } from './auth/auth-interceptor.interceptor';
 
 
 registerLocaleData(en);

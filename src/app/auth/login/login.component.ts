@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import { AuthService } from '../auth.service';
 import { UserLoginRequest } from 'src/app/Module/user-login-request.model';
 import { TokenDto } from 'src/app/Module/token-dto.model';
+import { Subscription } from 'rxjs';
 
 interface LoginResponse {
   accessToken:string;
@@ -20,6 +21,9 @@ export class LoginComponent {
     password: ''
   };
   errorMessage: string = '';
+  isLoggedIn = false;
+  isLoginFailed = false;
+  private subscription: Subscription = new Subscription();
 
   constructor(private authService: AuthService, private router:Router) {
 
@@ -29,8 +33,30 @@ export class LoginComponent {
   }
 
  
-
   login() {
+    this.subscription.add(
+      this.authService.login(this.loginData).subscribe(
+        (response: TokenDto) => {
+          localStorage.setItem('UserInfo', JSON.stringify(response.user));
+          localStorage.setItem('accessToken', JSON.stringify(response.accessToken));
+          localStorage.setItem('refreshToken', JSON.stringify(response.refreshToken));
+          this.isLoginFailed = false;
+          this.isLoggedIn = true;
+          this.router.navigate(['/dashboard']);
+        },
+        error => {
+          this.errorMessage = 'Login failed. Please check your credentials and try again.';
+          this.isLoginFailed = true;
+        }
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+ /*  login() {
     this.authService.login(this.loginData).subscribe(
       (response: TokenDto) => { // Capture the response data
         // Store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -46,7 +72,8 @@ export class LoginComponent {
         this.errorMessage = 'Login failed. Please check your credentials and try again.';
       }
     );
-  }
+  } */
+
 
   /* logout(){
     localStorage.clear()

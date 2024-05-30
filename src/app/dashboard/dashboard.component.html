@@ -16,13 +16,13 @@
 
 
         <li class="menu-item" [routerLinkActive]="'active'">
-          <a routerLink="/dash-home" class="menu-link">
+          <a routerLink="dash-home" class="menu-link">
             <i class="menu-icon tf-icons ti ti-brand-producthunt"></i>
             <div data-i18n="dashboard">Dashboard</div>
           </a>
         </li>
         <li class="menu-item" [routerLinkActive]="'active'">
-          <a routerLink="/products" class="menu-link">
+          <a routerLink="products" class="menu-link">
             <i class="menu-icon tf-icons ti ti-brand-producthunt"></i>
             <div data-i18n="Email">Products</div>
           </a>
@@ -37,12 +37,12 @@
           </a>
           <ul class="menu-sub" *ngIf="isMenuOpen">
             <li class="menu-item" [routerLinkActive]="'active'">
-              <a routerLink="/category" class="menu-link">
+              <a routerLink="category" class="menu-link">
                 <div data-i18n="Analytics">Category</div>
               </a>
             </li>
             <li class="menu-item" [routerLinkActive]="'active'">
-              <a routerLink="/subcategory" class="menu-link">
+              <a routerLink="subcategory" class="menu-link">
                 <div data-i18n="CRM">SubCategory</div>
               </a>
             </li>
@@ -51,7 +51,7 @@
 
         <!-- Customers -->
         <li class="menu-item" [routerLinkActive]="'active'">
-          <a routerLink="/Customers" class="menu-link">
+          <a routerLink="customers" class="menu-link">
             <i class="menu-icon tf-icons ti ti-user"></i>
             <div data-i18n="Layouts">Customers</div>
           </a>
@@ -59,7 +59,7 @@
 
         <!-- Order -->
         <li class="menu-header small text-uppercase" [routerLinkActive]="'active'">
-          <a routerLink="/Orders" class="menu-link menu-toggle">
+          <a routerLink="orders" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-truck-delivery"></i>
             <div data-i18n="Layouts">Order</div>
           </a>
@@ -98,7 +98,7 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
               <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <div class="avatar avatar-online">
-                  <img src="assets/img/avatars/Hind.png" alt class="h-auto rounded-circle" />
+                  <img src="assets/img/avatars/Hind.png" alt  class="h-auto rounded-circle" />
                 </div>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
@@ -107,7 +107,7 @@
                     <div class="d-flex">
                       <div class="flex-shrink-0 me-3">
                         <div class="avatar avatar-online">
-                          <img src="assets/img/avatars/Hind.png" alt class="h-auto rounded-circle" />
+                          <img src="assets/img/avatars/Hind.png" alt  class="h-auto rounded-circle" />
                         </div>
                       </div>
                       <div class="flex-grow-1">
@@ -145,7 +145,7 @@
 
       <!-- Content wrapper -->
       <div class="inner-content">
-        <router-outlet></router-outlet>
+          <router-outlet></router-outlet>  
       </div>
       <!-- Content wrapper -->
     </div>
