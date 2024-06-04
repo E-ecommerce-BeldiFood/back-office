@@ -27,7 +27,7 @@
                  
                   <label for="quantity-0" class="me-3">Quantity: </label>
                  <label for="">{{item.quantity}}</label>
-                 <p class="mt-1 text-sm font-medium text-gray-900">{{item.price}} <span class="text-xs text-gray-500">MAD</span></p>
+                 <p class="mt-1 text-sm font-medium text-gray-900"><span class="text-xs text-gray-500">MAD</span>{{item.price}} </p>
                 </div>
 
                 <div class="mt-4 sm:mt-0 sm:pr-9">
@@ -83,7 +83,7 @@
           </div>
           <div class="flex items-center justify-between border-t border-gray-200 pt-4">
             <dt class="text-base font-medium text-gray-900">Order total</dt>
-            <dd class="text-base font-medium text-gray-900">{{order.totalPrice}} <span class="text-xs text-gray-500">MAD</span></dd>
+            <dd class="text-base font-medium text-gray-900"><span class="text-xs text-gray-500">MAD</span> {{order.totalPrice}} </dd>
           </div>
         </dl>
 

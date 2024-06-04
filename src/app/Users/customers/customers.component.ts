@@ -25,6 +25,7 @@ export class CustomersComponent {
 
  showAllUsers: boolean = true;
   showInactiveUsers: boolean = false;
+     showActiveUsers: boolean = false;
 
   constructor(
     private customerService: CustomerService,
@@ -52,9 +53,11 @@ export class CustomersComponent {
     });
   }
   // New method to toggle between 'All' and 'Inactive Users'
-  toggleUserFilter(showAll: boolean) {
-    this.showAllUsers = showAll;
-    this.showInactiveUsers = !showAll;
+ 
+  toggleUserFilter(filter: string) {
+    this.showAllUsers = filter === 'all';
+    this.showActiveUsers = filter === 'active';
+    this.showInactiveUsers = filter === 'inactive';
     this.filterUsers();
   }
  
@@ -164,11 +167,14 @@ export class CustomersComponent {
   filterUsers() {
     if (this.showInactiveUsers) {
       this.filteredCustomers = this.customers.filter(customer => customer.status !== 'ENABLED');
+    } else if (this.showActiveUsers) {
+      this.filteredCustomers = this.customers.filter(customer => customer.status === 'ENABLED');
     } else {
       this.filteredCustomers = this.customers;
     }
     this.updatePaginatedProducts();
   }
+
 
 
 }

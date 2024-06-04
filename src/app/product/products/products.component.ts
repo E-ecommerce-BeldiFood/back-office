@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from '../product.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,6 +31,9 @@ export class ProductsComponent implements OnInit {
   showErrorDeleteAlert: boolean = false;
   showSuccessUpdateAlert: boolean = false;
   showErrorUpdateAlert: boolean = false;
+
+  selectAllChecked: boolean = false;
+ 
   //pagination
   page = 0;
   pageSize = 5; 
@@ -195,7 +198,7 @@ export class ProductsComponent implements OnInit {
     this.updateProductForm.patchValue({ subcategoryId: subcategoryId });
   }
 
-
+ 
   //Add Modal Attrribute
   isAddModalOpen: boolean = false;
   //Edit Modal Attribute
@@ -437,12 +440,7 @@ resetPagination(): void {
   this.paginatedProducts = this.paginate(this.products, this.currentPage, this.pageSize);
 }
 
-// Method to toggle selection of all products
-toggleSelectAll(event: any): boolean {
-  const checked = event.target.checked;
-  this.selectedProducts = checked ? this.paginatedProducts.map(product => product.id) : [];
-  return checked;
-}
+
 
 
 
@@ -470,22 +468,37 @@ massDeleteSelectedProducts(): void {
   }
 }
 
+// Method to toggle selection of all products
+toggleSelectAll(event: any): void {
+  const checked = event.target.checked;
+  this.selectedProducts = checked ? this.paginatedProducts.map(product => product.id) : [];
+  this.updateSelectAllCheckbox();
+}
 
 toggleSelectProduct(event: any, id: number): void {
   const checked = event.target.checked;
-
   if (checked) {
-      // Add product ID to selectedProducts array
-      this.selectedProducts.push(id);
+    this.selectedProducts.push(id);
   } else {
-      // Remove product ID from selectedProducts array
-      const index = this.selectedProducts.indexOf(id);
-      if (index !== -1) {
-          this.selectedProducts.splice(index, 1);
-      }
+    const index = this.selectedProducts.indexOf(id);
+    if (index !== -1) {
+      this.selectedProducts.splice(index, 1);
+    }
   }
+  this.updateSelectAllCheckbox();
 }
 
+
+updateSelectAllCheckbox(): void {
+  const selectAllCheckbox = document.getElementById('selectAllCheckbox') as HTMLInputElement;
+  if (!selectAllCheckbox) return;
+
+  const allSelected = this.paginatedProducts.every(product => this.selectedProducts.includes(product.id));
+  const someSelected = this.paginatedProducts.some(product => this.selectedProducts.includes(product.id));
+
+  selectAllCheckbox.checked = allSelected;
+  selectAllCheckbox.indeterminate = !allSelected && someSelected;
+}
 
 isSelected(id: number): boolean {
   return this.selectedProducts.includes(id);

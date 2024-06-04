@@ -16,7 +16,7 @@ export class OrdersComponent implements OnInit{
   selectedProduct: any = null; 
   id: number=this.activatedRoute.snapshot.params["id"];
   selectedStatus: string = '';
-  orderStatuses: string[] = ['Completed', 'Processing', 'PENDING', 'SHIPPED', 'CANCELLED'];
+  orderStatuses: string[] = ['Completed', 'Processing', 'SHIPPED', 'CANCELLED'];
  //pagination
  page = 0;
  pageSize = 5; 
@@ -115,6 +115,23 @@ export class OrdersComponent implements OnInit{
           this.showSuccessUpdateAlert = false;
         }, 2500);
             }
+
+            // Apply background color to the selected option
+            const selectElement = document.querySelector(`select[data-order-id="${orderId}"]`);
+            if (selectElement) {
+              selectElement.classList.remove('bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800', 'bg-blue-100', 'text-blue-800', 'bg-red-100', 'text-red-800');
+              if (newStatus === 'Completed') {
+                selectElement.classList.add('bg-green-100', 'text-green-800');
+              } else if (newStatus === 'Processing') {
+                selectElement.classList.add('bg-yellow-100', 'text-yellow-800');
+              } else if (newStatus === 'SHIPPED') {
+                selectElement.classList.add('bg-blue-100', 'text-blue-800');
+              } else if (newStatus === 'CANCELLED') {
+                selectElement.classList.add('bg-red-100', 'text-red-800');
+              }
+            }
+
+
             
           },
           error => {

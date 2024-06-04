@@ -16,7 +16,7 @@ import Chart from 'chart.js/auto';
   styleUrls: ['./dash-home.component.css']
 })
 export class DashHomeComponent implements OnInit{
- 
+  totalSales: number = 0;
 
   constructor(
     private customerService: CustomerService, 
@@ -69,7 +69,9 @@ export class DashHomeComponent implements OnInit{
     this.totalUsers = this.customers.length;
     this.totalOrders = this.orders.length;
     this.totalProducts = this.products.length;
-    //this.totalSales = this.orders.reduce((acc, order) => acc + order.amount, 0);
+    this.totalSales = this.orders
+    .filter(order => order.orderResponse.status === 'Completed')
+    .reduce((acc, order) => acc + order.orderResponse.totalPrice, 0);
   }
 
   incrementUsers(): void {

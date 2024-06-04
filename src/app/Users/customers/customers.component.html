@@ -9,14 +9,21 @@
       </div>
       <div class="flex items-center space-x-4">
         <label class="inline-flex items-center cursor-pointer">
-          <input type="radio" name="userFilter" [(ngModel)]="showAllUsers" (change)="toggleUserFilter(true)" class="hidden peer">
+          <input type="radio" name="userFilter" (change)="toggleUserFilter('all')" [checked]="showAllUsers" class="hidden peer">
           <div class="w-4 h-4 rounded-full border-2 border-gray-400 peer-checked:border-blue-500 flex items-center justify-center">
             <div *ngIf="showAllUsers" class="w-2 h-2 bg-blue-500 rounded-full"></div>
           </div>
           <span class="ml-2 text-gray-500 text-base font-bold">All</span>
         </label>
         <label class="inline-flex items-center cursor-pointer">
-          <input type="radio" name="userFilter" [(ngModel)]="showInactiveUsers" (change)="toggleUserFilter(false)" class="hidden peer">
+          <input type="radio" name="userFilter" (change)="toggleUserFilter('active')" [checked]="showActiveUsers" class="hidden peer">
+          <div class="w-4 h-4 rounded-full border-2 border-gray-400 peer-checked:border-blue-500 flex items-center justify-center">
+            <div *ngIf="showActiveUsers" class="w-2 h-2 bg-blue-500 rounded-full"></div>
+          </div>
+          <span class="ml-2 text-gray-500 text-base font-bold">Active Users</span>
+        </label>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="radio" name="userFilter" (change)="toggleUserFilter('inactive')" [checked]="showInactiveUsers" class="hidden peer">
           <div class="w-4 h-4 rounded-full border-2 border-gray-400 peer-checked:border-blue-500 flex items-center justify-center">
             <div *ngIf="showInactiveUsers" class="w-2 h-2 bg-blue-500 rounded-full"></div>
           </div>

@@ -40,21 +40,20 @@
           <!-- <td>{{ order.orderResponse.customerId }}</td> -->
           <td>{{ order.userDTO.userName }}</td>
           <td>{{order.orderResponse.totalQuantity }}</td>
-          <td>{{ order.orderResponse.totalPrice }} MAD</td>
+          <td><span class="text-xs text-gray-500">MAD</span> {{ order.orderResponse.totalPrice }}</td>
           <td>{{ order.orderResponse.createdAt| date }}</td>
           <td class="flex justify-center">
-            <select [(ngModel)]="order.orderResponse.status" (change)="updateOrderStatus(order.orderResponse.orderId, order.orderResponse.status)" id="small"
-              class="w-[150px] text-xs text-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              [ngClass]="{
-                'bg-green-100 text-green-800': order.orderResponse.status === 'Completed',
-                'bg-yellow-100 text-yellow-800': order.orderResponse.status === 'Processing',
-                
-                'bg-blue-100 text-blue-800': order.orderResponse.status === 'SHIPPED',
-                'bg-red-100 text-red-800': order.orderResponse.status === 'CANCELLED'
-              }" [(ngModel)]="order.orderResponse.status">
+            <select [(ngModel)]="order.orderResponse.status" 
+                    (change)="updateOrderStatus(order.orderResponse.orderId, order.orderResponse.status)" 
+                    class="custom-select w-32 px-2 py-1 text-xs border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': order.orderResponse.status === 'Completed',
+                      'bg-yellow-100 text-yellow-800': order.orderResponse.status === 'Processing',
+                      'bg-blue-100 text-blue-800': order.orderResponse.status === 'SHIPPED',
+                      'bg-red-100 text-red-800': order.orderResponse.status === 'CANCELLED'
+                    }">
               <option *ngFor="let status of orderStatuses" [value]="status">{{ status }}</option>
             </select>
-
           </td>
          <!--  <td>
             <span [ngClass]="{
@@ -77,8 +76,7 @@
 
 
           <td>
-            <a class="dropdown-item"  [routerLink]="['/Order_detail',order.orderResponse.orderId]" data-bs-toggle="modal"
-              data-bs-target="#enableOTPDet">
+            <a class="dropdown-item"  [routerLink]="['/dashboard', 'order_detail', order.orderResponse.orderId]" >
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAwdJREFUSEvFlV1IFFEUx/9naFzFRciHIAsLAgsKC6GegnyKtpComHRmLAwiaj8oIXqoqInqKSLInY0MTGrnXuohoi8pCIw+3qIvCvOjJPKljAop07U5ObKWu+6urRCdpzuXc8/v3DPn/C/hHxv94/jICYgEAj4uLd3EzGsALAUwHwCDuRfAU1KUtuHi4ivNzc2JbIlmBYRNM8DMsWTQXBftBtFO23HuZnLKCAgbhsXA4eSBdyC65LruTZ/P98zbGxkZWcauWwNgM4C53h4T7Y05zsl0yCTAhOADpCj10Xj8+lhZMphlWUp/V5fGzOcBFAHYbQtxeqJrCiCo6zVEdA3AIJiX21K+/JsmiBjGChd4CEBh5lUxKR+Mn/sNCGqaX1HVTgZmE/OWqJTx9OAhwxi7iS3EpJuHTHMPmE8B6Ej4/ZXjP/4PQNeDRGSP1vWVLcSSTGXJBbA0raBfVXuTCW6ISnnVS+YPwDBuERAAUdh2HA+Ut4UM4ziA/cR8LirljhRASNffg2iOCyw4I8SbvKMDCOr6SiK6z8CTmBBVqQDD+O51wreCgqLW1tYfmQC5SuT5N2pa6bCqfgLwxRZiZjpgAIB/sLCwpKWlxVtPsqkAEdMscZm/AhiwhShJB3QAWEhElVHHeTEdQKi+vgqu+zjZKIvTAXK0xerAvM+W8sS0AIZxEMBRABdtIbamA7YAuMBA16yKikWWZbn5zIFVXT3jY1lZD4ByMNfaUl5OATRqWtGwqnplKmdgW0yI1nwAYV2PMJEnE53K58+VTW1tQykA7yNomquJ+Xa+UhE0zeXE/MiTCkVRqpvi8fuTpGJ8I6zrB5jo2GjXfQVRve04N7LNhCd2H16/riWicwCKGYjEhIhO9M8o1yFdPwSiI0nHt0R0iYhuDQ0NPfcBBT9V1ZOS9QRoAMrG1Jp5d1TKpvRksj44u+rq1ilEZ73pnmKqu13m7WekvJfJL+eT2dDQUOhPJDYy81oAlQDmJUWwh5gfu4pyZ1Zf31WrvX0kWxL/99GfjuCln/kFI29HKO8Z5gAAAAAASUVORK5CYII="/>            </a>
           </td>
 
